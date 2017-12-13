@@ -9,6 +9,7 @@ ret,frame = cap.read()
 # setup initial location of window
 # r,h,c,w - region of image
 #           simply hardcoded the values
+
 r,h,c,w = 200,20,300,20
 track_window = (c,r,w,h)
 # track_window = np.round(cv2.selectROI(frame, False))
