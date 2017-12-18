@@ -28,7 +28,7 @@ if __name__ == '__main__':
             tracker = cv2.TrackerGOTURN_create()
 
     # Read video
-    video = cv2.VideoCapture("videos/chaplin.mp4")
+    video = cv2.VideoCapture("videos/example_video.avi")
 
     # Exit if video not opened.
     if not video.isOpened():

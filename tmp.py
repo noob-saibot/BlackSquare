@@ -10,12 +10,14 @@ ret,frame = cap.read()
 # r,h,c,w - region of image
 #           simply hardcoded the values
 
-r,h,c,w = 200,20,300,20
-track_window = (c,r,w,h)
-# track_window = np.round(cv2.selectROI(frame, False))
+# y,h,x,w = 200,20,300,20
+
+x, y, w, h = np.round(np.round(cv2.selectROI(frame, False))).astype(int)
+track_window = (x, y, w, h)
+print(track_window)
 
 # set up the ROI for tracking
-roi = frame[r:r+h, c:c+w]
+roi = frame[y:y+h, x:x+w]
 hsv_roi =  cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 mask = cv2.inRange(hsv_roi, np.array((0., 60.,32.)), np.array((180.,255.,255.)))
 roi_hist = cv2.calcHist([hsv_roi],[0],mask,[180],[0,180])
@@ -29,15 +31,12 @@ while(1):
 
     if ret == True:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        dst = cv2.calcBackProject([hsv],[0],roi_hist,[0,180],1)
-
-        # apply meanshift to get the new location
-        ret, track_window = cv2.meanShift(dst, track_window, term_crit)
-
-        # Draw it on image
-        x,y,w,h = track_window
-        img2 = cv2.rectangle(frame, (x,y), (x+w,y+h), 255,2)
-        cv2.imshow('img2',img2)
+        dst = cv2.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
+        ret, track_window = cv2.CamShift(dst, track_window, term_crit)
+        pts = cv2.boxPoints(ret)
+        pts = np.int0(pts)
+        img2 = cv2.polylines(frame, [pts], True, 255, 2)
+        cv2.imshow('img2', img2)
 
         k = cv2.waitKey(60) & 0xff
         if k == 27:
@@ -50,3 +49,4 @@ while(1):
 
 cv2.destroyAllWindows()
 cap.release()
+
