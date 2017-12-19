@@ -1,8 +1,8 @@
 import numpy as np
 import cv2 as cv
 from PIL import Image
-cap = cv.VideoCapture('videos/example_video.avi')
-# cap = cv.VideoCapture('videos/slow_traffic_small.mp4')
+# cap = cv.VideoCapture('videos/example_video.avi')
+cap = cv.VideoCapture('videos/slow_traffic_small.mp4')
 # take first frame of the video
 ret,frame = cap.read()
 # setup initial location of window
@@ -18,7 +18,7 @@ cv.normalize(roi_hist,roi_hist,0,255,cv.NORM_MINMAX)
 # Setup the termination criteria, either 10 iteration or move by atleast 1 pt
 term_crit = ( cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1 )
 img = cv.imread('videos/pepsi.jpg')
-im = Image.open('videos/pepsi.jpg')
+
 while(1):
     ret ,frame = cap.read()
     if ret == True:
@@ -40,27 +40,9 @@ while(1):
         img2 = cv.polylines(frame, [pts], True, 255, 2)
         print(pts)
 
-        if pts[0][0] > pts[3][0]:
-            x2 = pts[0][0]
-            x1 = pts[3][0]
-        else:
-            x1 = pts[0][0]
-            x2 = pts[3][0]
+        img3 = cv.resize(img, (track_window[2], track_window[3]))
 
-        if pts[2][1] > pts[0][1]:
-            y1 = pts[0][1]
-            y2 = pts[2][1]
-        else:
-            y2 = pts[0][1]
-            y1 = pts[2][1]
-
-        print(x2 - x1, y2 - y1)
-
-        img3 = cv.resize(img, (x2 - x1, y2 - y1))
-
-        print(x1, x2, y1, y2)
-
-        img2[y1:y2, x1:x2] = img3
+        img2[track_window[1]:track_window[1] + track_window[3], track_window[0]:track_window[0] + track_window[2]] = img3
 
         cv.imshow('img3', img3)
         cv.imshow('img2', img2)
